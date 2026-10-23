@@ -1,0 +1,75 @@
+# Manifest and matching reference
+
+## Portable manifest
+
+`printwitness/1` records expectations before export. It contains no executable source copy. Import validation enforces supported kinds, field types, unique IDs and resource bounds.
+
+A minimal captured section has this shape:
+
+```json
+{
+  "schema": "printwitness/1",
+  "createdAt": "2026-10-24T10:00:00.000Z",
+  "source": {
+    "name": "document.html",
+    "sha256": "<SHA-256 of the serialized ready DOM>",
+    "readiness": "signal:PRINTWITNESS_READY; timeout=10000ms"
+  },
+  "exclusions": [],
+  "sections": [
+    {
+      "id": "s1",
+      "selector": "#required",
+      "title": "Required",
+      "anchor": "Required",
+      "before": "Title",
+      "after": "Appendix",
+      "endContext": "Appendix",
+    "startContext": "Title",
+    "anchorInside": true,
+      "headers": [],
+      "expectations": [
+        {
+          "id": "s1-e1",
+          "kind": "text",
+          "text": "Approval recorded."
+        }
+      ]
+    }
+  ]
+}
+```
+
+The source hash covers Chromium's serialized DOM after readiness, rather than the original file bytes. Capture time and readiness are provenance, not proof of a source's authenticity. IDs are stable within a captured manifest; recapturing can produce different IDs.
+
+Expectation kinds are `text`, `row` and `link`. A row has a nonempty `cells` array in source order; a link has a nonempty `href`. A table header uses `kind: "text"` and `role: "table-header"`. An optional nonempty `excluded` string records a user-supplied exclusion reason. Source selector exclusions are stored separately in `exclusions`.
+
+## Section context
+
+`anchor`, `before` and `after` record the selected section's heading and neighboring headings. `endContext` records the first following DOM text block, including unselected content before the next heading. `null` means no following DOM content existed at capture. `startContext` records the last preceding DOM text block, or `null` at the document start. `anchorInside` records whether the heading belongs to the selected element. When its heading disappears, a section also needs its preceding DOM boundary; text before the original element cannot replace a lost record.
+
+Matching requires established, ordered boundaries. A repeated, missing or ambiguous boundary produces manual review instead of borrowing text from elsewhere. A missing selected section's end marker can be skipped only if none of that section's active expectations survives before the next established marker. Surviving neighboring boundaries can establish a completely hidden section's absence.
+
+Legacy manifests without `endContext` are accepted for inspection, but do not establish positive matches. Capture again to obtain DOM boundary context. Do not edit boundaries to make a failed check pass.
+
+## Text and multiplicity
+
+NFKC normalization handles composed accents and compatibility ligatures. Whitespace, NBSP, zero-width characters and soft hyphens are normalized. HTML line breaks and whitespace between inline elements are preserved as separators. PDF line wraps are normalized; continuous CJK text can span extraction lines without acquiring spaces. A second search form removes discretionary line-end hyphenation while retaining offsets into the original stream.
+
+Matching preserves case, punctuation and numbers. Word/record boundaries prevent `PW-042` from matching `PW-0420`. Repeated expectations consume separate occurrences within their section. Matches are never counted as evidence of actual visibility.
+
+## Tables and links
+
+A row must match as an ordered record on one baseline and page. Cell boundaries must align with complete extraction items and distinguishable horizontal gaps. A flattened string such as `A B C` cannot establish whether the cells were `["A B", "C"]` or `["A", "B C"]`. Missing cell geometry, empty/merged cells, wrapping, reordering and page splits require manual review. A body record indistinguishable from a repeating header is also ambiguous.
+
+A link requires a label and an independently consumed, spatially associated URL annotation. When a label occupies only part of a combined extraction item, its whole-item bounding box cannot establish the correct annotation; the result requires manual review. An unrelated correct URL cannot satisfy an altered link. Relative file links and internal PDF destinations are not resolved into reliable external URL annotations in v0.1.
+
+## Report contract and limits
+
+`printwitness-report/1` includes the frozen manifest, PDF hash and page metadata, overall status, findings, evidence coordinates and warnings. Evidence uses PDF page coordinates at scale 1 with a top-left origin. The standalone HTML export embeds page images separately; JSON contains page text and evidence, not raster images.
+
+The core has no filesystem, browser, React or PDF.js dependency. It operates on a typed extraction index, so extraction confidence remains separate from presentation.
+
+PDF extraction order is not a semantic document tree. Multi-column layouts, repeated headings, rotated/vertical text, nested tables and unusual encodings can prevent reliable verification. Rotated/vertical extraction currently makes the index unverifiable. An empty-text page prevents confident missing-text claims even if that page is legitimately blank.
+
+Capture covers ordinary light-DOM text. CSS pseudo-elements, canvas text, shadow DOM, form control values and text in images are outside the capture model. There is no OCR. No result certifies accessibility, legal compliance, PDF/A conformance or an intact visual layout.

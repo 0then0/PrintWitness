@@ -1,4 +1,7 @@
 # Logs
+.npm-cache/
+.local-browsers/
+artifacts/
 logs
 *.log
 npm-debug.log*

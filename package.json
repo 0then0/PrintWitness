@@ -1,0 +1,45 @@
+{
+  "name": "printwitness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local, manifest-based HTML to PDF content verification",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=24.13.0"
+  },
+  "scripts": {
+    "dev": "node src/node/server.ts --dev",
+    "build": "tsc --noEmit && vite build",
+    "start": "node src/node/server.ts",
+    "test": "node --test tests/*.test.ts",
+    "validate": "node scripts/validate.ts",
+    "test:ui": "node scripts/test-ui.ts",
+    "check": "npm run lint && npm run build && npm test && npm run validate && npm run test:ui",
+    "browsers": "node scripts/install-browser.ts",
+    "lint": "biome ci . --error-on-warnings",
+    "format": "biome check --write ."
+  },
+  "dependencies": {
+    "pdfjs-dist": "6.4.299",
+    "playwright": "1.64.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.2",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0then0/PrintWitness.git"
+  },
+  "bugs": {
+    "url": "https://github.com/0then0/PrintWitness/issues"
+  },
+  "homepage": "https://github.com/0then0/PrintWitness#readme"
+}
