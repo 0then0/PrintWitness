@@ -25,8 +25,8 @@ A minimal captured section has this shape:
       "before": "Title",
       "after": "Appendix",
       "endContext": "Appendix",
-    "startContext": "Title",
-    "anchorInside": true,
+      "startContext": "Title",
+      "anchorInside": true,
       "headers": [],
       "expectations": [
         {
