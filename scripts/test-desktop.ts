@@ -52,7 +52,8 @@ await new Promise<void>((done, reject) => {
   foreign.listen(4173, '127.0.0.1', done);
 });
 const fixture = await fixtureServer();
-const browser = await chromium.launch();
+// The test browser shares the engine directory with the portable application.
+const browser = await chromium.launch({ args: ['--enable-logging=stderr'] });
 const stateDir = join(testRoot, 'user state');
 await mkdir(stateDir);
 // Recover a real stale lock without a live PID (0 is not a process identifier here).
