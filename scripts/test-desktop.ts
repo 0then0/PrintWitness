@@ -23,12 +23,13 @@ await rm(testRoot, { recursive: true, force: true });
 await mkdir(testRoot, { recursive: true });
 const bundles = join(output, 'bundles');
 const stem = `PrintWitness-${metadata.version}-${target}`;
-await run('tar', [
-  '-xf',
-  join(bundles, `${stem}.${process.platform === 'linux' ? 'tar.gz' : 'zip'}`),
-  '-C',
-  testRoot,
-]);
+// Windows tar can corrupt Unicode in -C arguments. Node sets cwd through the
+// native Unicode process API, preserving the non-ASCII installation-path test.
+await run(
+  'tar',
+  ['-xf', join(bundles, `${stem}.${process.platform === 'linux' ? 'tar.gz' : 'zip'}`)],
+  { cwd: testRoot },
+);
 const portable =
   process.platform === 'darwin'
     ? join(testRoot, 'PrintWitness.app/Contents/Resources/app')
