@@ -5,8 +5,9 @@ import { fileURLToPath } from 'node:url';
 import type { Browser, Page } from 'playwright';
 import { parseManifest } from '../core/manifest.ts';
 import type { Manifest, Section } from '../core/types.ts';
+import { appRoot } from './paths.ts';
 
-process.env.PLAYWRIGHT_BROWSERS_PATH ??= resolve('.local-browsers');
+process.env.PLAYWRIGHT_BROWSERS_PATH ??= resolve(appRoot, '.local-browsers');
 export const { chromium } = await import('playwright');
 
 export interface SourceOptions {

@@ -37,7 +37,7 @@ Integration regressions check the complete DOM-to-PDF path for unselected text a
 
 Network checks assert that local scripts, styles and read-only data work while cross-origin HTTP requests, cross-origin redirects, writes, WebSockets, WebRTC and escaping file symlinks are blocked. The WebRTC test checks frame API availability and listens for unexpected ICE/TURN UDP packets. The server test sends a malformed request target and verifies that the process continues serving requests.
 
-UI checks exercise capture, broken and fixed printing, existing PDF upload, evidence selection, page navigation, search, filtering, explicit exclusions, manifest import and real JSON/HTML downloads. Offline HTML must render without HTTP requests. All supported locales are checked at widths of 1500, 1024, 390 and 320 px; source forms and errors are checked at desktop and mobile widths. Catalog tests enforce key and parameter completeness, diagnostic translation, escaping and unchanged document content.
+UI checks exercise capture, broken and fixed printing, existing PDF upload, evidence selection, page navigation, search, filtering, explicit exclusions, manifest import and real JSON/HTML downloads. Offline HTML must render without HTTP requests. All supported locales are checked at widths of 1500, 1024, 390 and 320 px; source forms and errors are checked at desktop and mobile widths. Theme checks cover explicit light/dark overrides, live system changes, saved preferences, invalid or unavailable storage, unchanged PDF rendering and every locale at desktop/mobile widths. Screenshots are saved in `artifacts/ui/themes/`. Catalog tests enforce key and parameter completeness, diagnostic translation, escaping and unchanged document content.
 
 ## Artifacts
 
@@ -47,3 +47,7 @@ Generated files stay in the ignored `artifacts/` directory:
 - `ui/`: downloaded reports and browser screenshots, including locale-specific layouts in `ui/locales/`.
 
 CI retains these artifacts for seven days. Do not upload reports from private documents to public CI or issues. PDF metadata, timestamps and font rasterization can vary by operating system; assertions check semantic behavior rather than byte-identical generated PDFs. Automated layout checks detect overflow and clipped controls but do not replace visual inspection.
+
+## Standalone distributions
+
+`npm run desktop:build` builds, archives and tests the native distribution. The separate Desktop workflow covers macOS arm64/x64, Windows x64 and Ubuntu 24.04 x64. Validation uses the actual portable archive and installation payload with the bundled Node runtime and Chromium, rather than relying on the source checkout's runtime. See the [standalone guide](desktop.md#validation) for isolation, lifecycle and PDF assertions.

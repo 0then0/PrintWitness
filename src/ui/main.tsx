@@ -48,9 +48,29 @@ function savedLocale(): Locale {
     return defaultLocale;
   }
 }
+type Theme = 'system' | 'light' | 'dark';
+const isTheme = (value: unknown): value is Theme =>
+  value === 'system' || value === 'light' || value === 'dark';
+function savedTheme(): Theme {
+  try {
+    const value = localStorage.getItem('printwitness.theme');
+    return isTheme(value) ? value : 'system';
+  } catch {
+    return 'system';
+  }
+}
 function App() {
   const [locale, setLocale] = useState<Locale>(savedLocale);
   const t = translator(locale);
+  const [theme, setTheme] = useState<Theme>(savedTheme);
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem('printwitness.theme', theme);
+    } catch {
+      /* Theme remains usable when storage is unavailable. */
+    }
+  }, [theme]);
   useEffect(() => {
     document.documentElement.lang = locale;
     document.title = translator(locale)('appTitle');
@@ -60,6 +80,18 @@ function App() {
       /* Language remains usable when storage is unavailable. */
     }
   }, [locale]);
+  const [desktop, setDesktop] = useState(false);
+  const [stopped, setStopped] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch('/api/runtime', { signal: controller.signal })
+      .then((r) => r.json())
+      .then((runtime) => {
+        if (!controller.signal.aborted) setDesktop(runtime.desktop === true);
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
   const [source, setSource] = useState('');
   const [selectors, setSelectors] = useState('#summary\n#register\n#terms');
   const [exclusions, setExclusions] = useState('');
@@ -148,6 +180,13 @@ function App() {
   const pageInfo = report?.pdf.pages[page - 1];
   const evidence = current?.evidence.filter((e) => e.page === page) ?? [];
   const excludedCount = expected.filter((e) => e.excluded).length;
+  if (stopped)
+    return (
+      <main className="app stopped" role="status">
+        <h1>PrintWitness</h1>
+        <p>{t('appStopped')}</p>
+      </main>
+    );
   return (
     <div className="app">
       <header className="topbar">
@@ -173,6 +212,21 @@ function App() {
                 {localeNames[value]}
               </option>
             ))}
+          </select>
+        </label>
+        <label className="theme-switch">
+          <span id="theme-label">{t('theme')}</span>
+          <select
+            aria-labelledby="theme-label"
+            data-testid="theme"
+            value={theme}
+            onChange={(e) => {
+              if (isTheme(e.target.value)) setTheme(e.target.value);
+            }}
+          >
+            <option value="system">{t('themeSystem')}</option>
+            <option value="light">{t('themeLight')}</option>
+            <option value="dark">{t('themeDark')}</option>
           </select>
         </label>
         <button
@@ -670,6 +724,21 @@ function App() {
         </aside>
       </main>
       <footer>
+        {desktop && (
+          <button
+            type="button"
+            disabled={!!busy}
+            onClick={() => {
+              if (window.confirm(t('quitConfirm')))
+                void run('stopping', async () => {
+                  await api('desktop/quit', {});
+                  setStopped(true);
+                });
+            }}
+          >
+            {t('quitApp')}
+          </button>
+        )}
         PrintWitness v0.1 <span>{t('footer')}</span>
       </footer>
     </div>

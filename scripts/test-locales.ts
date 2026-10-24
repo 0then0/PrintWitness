@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import type { Browser, Page } from 'playwright';
 import { locales, translator } from '../src/i18n/index.ts';
 
-async function assertLayout(page: Page, description: string) {
+export async function assertLayout(page: Page, description: string) {
   const issues = await page.evaluate(() => {
     const problems: string[] = [];
     if (document.documentElement.scrollWidth > innerWidth) problems.push('page overflows');
@@ -19,8 +19,9 @@ async function assertLayout(page: Page, description: string) {
       )
         problems.push(`clipped label: ${element.textContent?.trim()}`);
     }
-    const picker = document.querySelector<HTMLSelectElement>('[data-testid=language]');
-    if (picker) {
+    for (const picker of document.querySelectorAll<HTMLSelectElement>(
+      '[data-testid=language], [data-testid=theme]',
+    )) {
       const style = getComputedStyle(picker);
       const context = document.createElement('canvas').getContext('2d');
       if (context) {
@@ -31,7 +32,7 @@ async function assertLayout(page: Page, description: string) {
           Number.parseFloat(style.paddingLeft) -
           Number.parseFloat(style.paddingRight) -
           20;
-        if (textWidth > available) problems.push('language name is truncated');
+        if (textWidth > available) problems.push(`${picker.dataset.testid} selection is truncated`);
       }
     }
     return problems;

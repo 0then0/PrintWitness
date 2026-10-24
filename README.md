@@ -15,7 +15,13 @@ PrintWitness runs locally. Its workspace combines a checklist, rendered document
 
 **A text-layer match does not prove that content is visible.** Clipping, overlays, transparency and white-on-white text are not universally detected. Inspect the rendered pages before accepting the layout.
 
-## Install
+## Standalone application
+
+Standalone packages include Node.js, Playwright, Chromium and the built interface. Launch PrintWitness with one click; Git, npm and a separate Chromium installation are not required. Portable and installation packages use the same prepared application.
+
+See [standalone installation and packaging](docs/desktop.md) for macOS ZIP/DMG, Windows ZIP/installer and Ubuntu archive/Debian packages. The [Desktop workflow](.github/workflows/desktop.yml) builds and tests native distributions and stores them as CI artifacts. It does not publish releases automatically.
+
+## Install from source
 
 Use Node.js **24.13 or newer** and npm. Run these commands from the project directory:
 
@@ -40,6 +46,8 @@ For development use `npm run dev`. Set `PORT` to change the local server port.
 6. Select a finding to inspect its explanation and page coordinates. Export the JSON report, standalone HTML report and checked PDF.
 
 Capturing again creates a new baseline. Printing never silently replaces it. Keep the manifest, PDF and report together.
+
+Choose System, Light or Dark in the theme selector. System follows your operating system automatically; explicit choices are saved locally. PDF pages keep their original colors.
 
 English is the default language. Spanish, German, French, Japanese, Brazilian Portuguese and Russian are also available. Interface text and HTML reports follow the selection; original content, URLs and machine-readable JSON remain unchanged.
 

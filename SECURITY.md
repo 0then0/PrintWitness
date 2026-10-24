@@ -12,6 +12,12 @@ Local files are served through an intercepted synthetic origin. Only assets with
 
 These controls support local processing; they do not make Chromium or the operating system a security sandbox for hostile documents. Source scripts can still read approved same-origin resources and perform local computation. Do not expose the application through a reverse proxy or public network interface.
 
+## Standalone distribution
+
+The standalone launcher preserves the same loopback, source-isolation and PDF verification boundaries. It bundles the official Node.js runtime, production dependencies and the Playwright-compatible Chromium engine. Builds verify the Node archive against the official SHA-256 manifest and retain component licenses. A native package is not an additional sandbox for hostile source scripts.
+
+The launcher keeps an instance lock, remembered port and startup log in the current user's application-state directory. Installation resources are not writable runtime storage. Desktop shutdown uses the existing same-origin/custom-header checks and is unavailable in ordinary source-server mode. Unsigned developer builds are not signed or notarized releases; publishers must supply appropriate signing credentials separately.
+
 ## Reports and limits
 
 Manifests and reports contain document text, URLs, hashes and evidence. Standalone HTML reports also embed rendered pages and use an inline script for highlighting. Their content security policy prohibits network resources. Exported files are not encrypted or redacted.

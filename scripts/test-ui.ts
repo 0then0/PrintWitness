@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { chromium } from '../src/node/source.ts';
 import { fixtureServer } from './fixture-server.ts';
 import { testLocales } from './test-locales.ts';
+import { testThemes } from './test-themes.ts';
 
 const port = 4187;
 const base = `http://127.0.0.1:${port}`;
@@ -55,6 +56,10 @@ try {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto(base);
+  assert.equal(
+    await page.getByRole('button', { name: 'Quit PrintWitness', exact: true }).count(),
+    0,
+  );
   await page.getByRole('heading', { name: 'Is every required item still there?' }).waitFor();
   await page.getByLabel('HTML path or localhost URL').fill(fixture.url);
   await page.getByLabel('Page readiness').selectOption('signal');
@@ -113,6 +118,7 @@ try {
   await page.getByLabel('Filter checks').selectOption('all');
   await page.locator('.check').filter({ hasText: 'PW-096' }).click();
   assert((await page.locator('.paper rect').count()) > 0);
+  await page.locator('.paper img').evaluate((img: HTMLImageElement) => img.decode());
   assert(
     await page
       .locator('.paper img')
@@ -136,6 +142,7 @@ try {
     'no horizontal overflow on mobile',
   );
   await testLocales(page, browser, base);
+  await testThemes(page, browser, base);
   // Manifest import works independently of the original source path.
   await page.getByRole('button', { name: 'Source & manifest' }).click();
   await page

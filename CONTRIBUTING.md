@@ -4,7 +4,7 @@ PrintWitness is a local HTML-to-PDF content verifier. Keep the checking core sma
 
 ## Development
 
-Follow the [installation instructions](README.md#install), then run:
+Follow the [source installation instructions](README.md#install-from-source), then run:
 
 ```sh
 npm run dev
@@ -29,6 +29,12 @@ Node executes server-side TypeScript directly. Vite builds the browser applicati
 English (`en`) defines the catalog keys in `src/i18n/en.ts`. Update every supported catalog when adding a message, preserving named interpolation parameters. Register stable core diagnostics in `src/i18n/index.ts`; JSON diagnostics remain English. Do not translate source content, URLs or identifiers.
 
 The interface uses system fonts, warm paper surfaces, restrained typography and functional status colors. Keep the document/check/detail workflow accessible at narrow widths. Verify long translated labels, keyboard focus, errors, empty states and exported HTML reports. Avoid decorative dashboards and network-loaded visual assets.
+
+## Standalone packaging
+
+`scripts/prepare-desktop.ts` creates a self-contained native payload; `scripts/bundle-desktop.ts` produces portable and installation formats from it. `src/node/launcher.ts` manages the loopback server, startup state and browser opening. Resource paths are relative to the application root, independently of the working directory. No desktop framework is added to the checking core.
+
+Run `npm run desktop:build` on a supported native host and follow the [packaging guide](docs/desktop.md). This downloads a checksum-verified official Node runtime and the Playwright browser revision. Keep `desktop.nodeVersion` on a supported, patched Node.js 24 release; it is a pinned distribution runtime, separate from the developer's Node installation. Browser and native canvas updates require checking every packaged target.
 
 ## Pull requests
 

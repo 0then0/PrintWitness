@@ -18,7 +18,11 @@
     "check": "npm run lint && npm run build && npm test && npm run validate && npm run test:ui",
     "browsers": "node scripts/install-browser.ts",
     "lint": "biome ci . --error-on-warnings",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "desktop:prepare": "npm run build && node scripts/prepare-desktop.ts",
+    "desktop:test": "node scripts/test-desktop.ts",
+    "desktop:bundle": "node scripts/bundle-desktop.ts",
+    "desktop:build": "npm run desktop:prepare && npm run desktop:bundle && npm run desktop:test"
   },
   "dependencies": {
     "pdfjs-dist": "6.4.299",
@@ -41,5 +45,8 @@
   "bugs": {
     "url": "https://github.com/0then0/PrintWitness/issues"
   },
-  "homepage": "https://github.com/0then0/PrintWitness#readme"
+  "homepage": "https://github.com/0then0/PrintWitness#readme",
+  "desktop": {
+    "nodeVersion": "24.22.1"
+  }
 }

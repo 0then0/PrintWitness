@@ -1,5 +1,13 @@
 export const en = {
   language: 'Language',
+  quitApp: 'Quit PrintWitness',
+  quitConfirm: 'Stop PrintWitness? Documents in memory will be cleared. Export results first.',
+  appStopped: 'PrintWitness has stopped. You can close this tab.',
+  stopping: 'Stopping PrintWitness…',
+  theme: 'Theme',
+  themeSystem: 'System',
+  themeLight: 'Light',
+  themeDark: 'Dark',
   appTitle: 'PrintWitness · PDF content check',
   local: 'Local · no external services',
   sourceManifest: 'Source & manifest',

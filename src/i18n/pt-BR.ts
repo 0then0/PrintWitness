@@ -1,6 +1,15 @@
 import type { Messages } from './en.ts';
 export const messages: Messages = {
   language: 'Idioma',
+  quitApp: 'Sair do PrintWitness',
+  quitConfirm:
+    'Encerrar o PrintWitness? Os documentos na memória serão apagados. Exporte os resultados primeiro.',
+  appStopped: 'PrintWitness foi encerrado. Você pode fechar esta aba.',
+  stopping: 'Encerrando o PrintWitness…',
+  theme: 'Tema',
+  themeSystem: 'Sistema',
+  themeLight: 'Claro',
+  themeDark: 'Escuro',
   appTitle: 'PrintWitness · Verificação de PDF',
   local: 'Local · sem serviços externos',
   sourceManifest: 'Origem e manifesto',
