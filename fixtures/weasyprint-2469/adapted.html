@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" />
+  <title>PrintWitness external validation: WeasyPrint 2469</title>
+  <style>
+    @page { size: A4; margin: 20mm; }
+    body { display: flex; flex-direction: column; font: 16px/1.25 "DejaVu Sans"; }
+    #pusher { height: 80em; width: 1em; outline: 1px solid black; }
+    h2 { font-size: 18px; }
+    #break-after { break-after: page; }
+  </style>
+  <body>
+    <div id="pusher"></div>
+    <section id="required">
+      <h2>PW2469 Required content</h2>
+      <div id="break-after">PW2469-B before forced break</div>
+      <p>PW2469-C after forced break</p>
+    </section>
+    <h2>PW2469 End context</h2>
+  </body>
+</html>

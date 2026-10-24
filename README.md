@@ -87,6 +87,10 @@ This runs Biome, strict TypeScript checking, the production build, core regressi
 
 [CI](.github/workflows/ci.yml) runs the same checks on Ubuntu with Node.js 24 for pushes and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for the code layout, formatting and translation workflow.
 
+## External renderer case study
+
+The [WeasyPrint #2469 lab](docs/case-studies/weasyprint-2469.md) reproduces real content loss across pinned parent/fix revisions, independently checked by extraction, page inspection and the upstream regression. One frozen manifest gives `manual` for the buggy PDF because its section end boundary also disappears, and `found` for the fixed PDF. This is a documented conservative result, not confirmed automatic loss detection or evidence of adoption by WeasyPrint.
+
 ## Limits and privacy
 
 PrintWitness v0.1 supports text PDFs, mandatory DOM text, ordinary table rows and URL annotations. It does not provide OCR, AI analysis, automatic layout repair, PDF/A validation, accounts or a hosted service.
@@ -101,4 +105,4 @@ Ambiguous section boundaries, wrapped or merged table cells, combined link-label
 
 ## License
 
-[Apache-2.0](LICENSE), including the SVG icon and validation template.
+[Apache-2.0](LICENSE), including the SVG icon and original validation template. The external lab's adapted fixture and embedded fonts have separate notices in [the lab attribution](scripts/labs/weasyprint-2469/NOTICE.md).

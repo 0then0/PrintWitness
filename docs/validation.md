@@ -51,3 +51,9 @@ CI retains these artifacts for seven days. Do not upload reports from private do
 ## Standalone distributions
 
 `npm run desktop:build` builds, archives and tests the native distribution. The separate Desktop workflow covers macOS arm64/x64, Windows x64 and Ubuntu 24.04 x64. Validation uses the actual portable archive and installation payload with the bundled Node runtime and Chromium, rather than relying on the source checkout's runtime. See the [standalone guide](desktop.md#validation) for isolation, lifecycle and PDF assertions.
+
+## External renderer lab
+
+The optional [WeasyPrint #2469 case study](case-studies/weasyprint-2469.md) includes pinned source revisions, an isolated Docker environment, independent extraction/rendering and upstream regression checks, and existing-PDF comparison against one frozen manifest. It documents a `manual` buggy result and a `found` fixed result, including textless-page uncertainty. It requires network downloads during preparation and is separate from the offline project checks. Generated evidence remains in `artifacts/weasyprint-2469/`; only its license-reviewed allowlist is packaged for sharing.
+
+Lab artifact-integrity tests run with `npm test` without Docker or external downloads. They check valid PDF/report identities, changed PDF bytes, mismatched manifests and rejection of swapped PDFs by both verification and packaging before existing outputs can be overwritten.
