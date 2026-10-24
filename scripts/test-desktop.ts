@@ -34,6 +34,11 @@ const portable =
   process.platform === 'darwin'
     ? join(testRoot, 'PrintWitness.app/Contents/Resources/app')
     : join(testRoot, 'PrintWitness');
+assert.deepEqual(
+  await readdir(join(portable, 'fixtures')),
+  ['validation.html'],
+  'Desktop payload must not include external lab fixtures without their notices.',
+);
 const executableFor = (root: string) =>
   process.platform === 'darwin'
     ? join(root, '../../MacOS/PrintWitness')

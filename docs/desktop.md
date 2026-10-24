@@ -38,6 +38,8 @@ The builder downloads an official Node.js runtime pinned in `package.json`, veri
 
 macOS packaging uses the system `sips`, `iconutil`, `ditto` and `hdiutil` tools. Windows packaging uses the .NET Framework C# compiler and NSIS (`NSIS_EXE` can specify `makensis.exe`). Ubuntu packaging requires `tar`, `dpkg-deb` and Chromium system dependencies. On Linux install those build dependencies with `npm run browsers -- --with-deps --only-shell` before building. Builder prerequisites are not commands end users must run.
 
+DMG creation retries the specific `hdiutil` error `Resource busy` up to three attempts, removing partial images between attempts and on failure. Other errors fail immediately. Persistent failures still fail the build. The desktop payload includes only the original `fixtures/validation.html`; external lab fixtures and their separate licensing remain in the source repository.
+
 Outputs are written to `artifacts/desktop/<platform>-<architecture>/bundles/` with SHA-256 checksums. The `desktop` workflow builds native targets and retains artifacts without publishing a GitHub release. Its matrix covers macOS arm64/x64, Windows x64 and Ubuntu 24.04 x64.
 
 The pipeline stages can also run separately:

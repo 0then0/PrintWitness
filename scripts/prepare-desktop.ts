@@ -13,12 +13,14 @@ for (const path of [
   'src/core',
   'src/node',
   'src/i18n',
-  'fixtures',
   'LICENSE',
   'package.json',
   'package-lock.json',
 ])
   await cp(join(appRoot, path), join(app, path), { recursive: true });
+// External validation labs are not runtime resources and have separate notices.
+await mkdir(join(app, 'fixtures'), { recursive: true });
+await copyFile(join(appRoot, 'fixtures/validation.html'), join(app, 'fixtures/validation.html'));
 await copyFile(join(appRoot, 'docs/desktop.md'), join(app, 'README.md'));
 await npm(
   ['ci', '--omit=dev', '--ignore-scripts', '--no-audit', '--cache', join(appRoot, '.npm-cache')],

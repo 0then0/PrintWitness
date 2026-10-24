@@ -3,6 +3,7 @@ import { cp, mkdir, readdir, readFile, rm, symlink, unlink, writeFile } from 'no
 import { join, relative } from 'node:path';
 import { appRoot } from '../src/node/paths.ts';
 import { app, metadata, output, prepared, run, target } from './desktop/common.ts';
+import { createDmg } from './desktop/dmg.ts';
 
 await readFile(join(output, 'prepared.json')); // Fail clearly if preparation was skipped.
 const bundles = join(output, 'bundles');
@@ -20,17 +21,7 @@ if (process.platform === 'darwin') {
   const applications = join(prepared, 'Applications');
   await symlink('/Applications', applications);
   try {
-    await rm(join(bundles, `${stem}.dmg`), { force: true });
-    await run('/usr/bin/hdiutil', [
-      'create',
-      '-volname',
-      'PrintWitness',
-      '-srcfolder',
-      prepared,
-      '-format',
-      'UDZO',
-      join(bundles, `${stem}.dmg`),
-    ]);
+    await createDmg(prepared, join(bundles, `${stem}.dmg`));
   } finally {
     await unlink(applications);
   }
