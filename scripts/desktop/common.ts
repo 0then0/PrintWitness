@@ -26,7 +26,7 @@ export const launcher =
 export function run(
   command: string,
   args: string[],
-  options: { cwd?: string; env?: NodeJS.ProcessEnv } = {},
+  options: { cwd?: string; env?: NodeJS.ProcessEnv; windowsVerbatimArguments?: boolean } = {},
 ) {
   return new Promise<void>((done, reject) => {
     const child = spawn(command, args, {
@@ -34,6 +34,7 @@ export function run(
       env: options.env ?? process.env,
       stdio: 'inherit',
       windowsHide: true,
+      windowsVerbatimArguments: options.windowsVerbatimArguments,
     });
     child.once('error', reject);
     child.once('exit', (code) =>

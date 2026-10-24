@@ -237,13 +237,22 @@ try {
     detach = () => run('/usr/bin/hdiutil', ['detach', mount]);
   } else if (process.platform === 'win32') {
     installed = join(testRoot, 'installed');
-    await run(join(bundles, `${stem}-setup.exe`), ['/S', `/D=${installed}`]);
-    detach = () => run(join(installed, 'Uninstall.exe'), ['/S', `_?=${installed}`]);
+    // NSIS consumes the entire unquoted tail after /D= or _?=, including spaces.
+    // Node's usual Windows argument quoting prevents NSIS from recognizing it.
+    const nsisOptions = { windowsVerbatimArguments: true };
+    await run(join(bundles, `${stem}-setup.exe`), ['/S', `/D=${installed}`], nsisOptions);
+    for (const file of ['Uninstall.exe', 'PrintWitness.exe', 'build.json'])
+      assert(
+        (await stat(join(installed, file))).isFile(),
+        `Installer must create ${file} in the requested Unicode/space path`,
+      );
+    detach = () => run(join(installed, 'Uninstall.exe'), ['/S', `_?=${installed}`], nsisOptions);
   } else {
     const deb = join(testRoot, 'deb');
     await run('dpkg-deb', ['-x', join(bundles, `${stem}.deb`), deb]);
     installed = join(deb, 'opt/printwitness');
   }
+  const installationErrors: unknown[] = [];
   try {
     for (const file of ['build.json', 'runtime/LICENSE', 'src/node/server.ts']) {
       const hash = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
@@ -284,9 +293,16 @@ try {
     assert.equal(await child.exited, 0, child.errors());
     await waitFor(async () => ((await stateAt(installedState)) ? undefined : true));
     console.log('Installer payload: identical resources, launch and shutdown passed.');
-  } finally {
-    await detach?.();
+  } catch (error) {
+    installationErrors.push(error);
   }
+  try {
+    await detach?.();
+  } catch (error) {
+    installationErrors.push(error);
+  }
+  if (installationErrors.length)
+    throw new AggregateError(installationErrors, 'Installer test or cleanup failed');
 } finally {
   first.child.kill('SIGTERM');
   await browser.close();
