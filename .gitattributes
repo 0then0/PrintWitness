@@ -1,0 +1,18 @@
+# Keep source consistent across native macOS, Windows and Linux builds.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.dmg binary
+*.exe binary
+*.deb binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary

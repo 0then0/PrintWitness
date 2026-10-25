@@ -30,4 +30,10 @@ A found result establishes text-layer presence within matching limits, not visib
 
 Use the repository's [private vulnerability reporting form](https://github.com/0then0/PrintWitness/security/advisories/new) when available. If private reporting is unavailable, ask for a private contact channel in an issue without disclosing exploit details or private document content. Include the affected revision, environment and a minimal synthetic reproducer.
 
+Do not attach production documents, credentials or unredacted reports. State the expected security boundary, actual behavior, impact and reproduction steps privately. Maintainers will assess the report and coordinate disclosure; no response deadline or embargo duration is promised here.
+
+## Supported versions
+
+Security fixes target the latest published release and current main branch. Older releases do not have separate maintenance branches; update to the latest release before checking whether an issue remains. Bundled Node.js, Chromium and production dependencies are part of the supported application, so updating only the system browser does not update a standalone package's capture engine.
+
 Dependency updates are reviewed through Dependabot. Scheduled version-update groups do not include security updates; repository administrators should keep Dependabot alerts and security updates enabled. There is no automatic merge policy.

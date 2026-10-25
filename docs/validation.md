@@ -46,7 +46,7 @@ Generated files stay in the ignored `artifacts/` directory:
 - `regressions/` and `network/`: disposable integration sources.
 - `ui/`: downloaded reports and browser screenshots, including locale-specific layouts in `ui/locales/`.
 
-CI retains these artifacts for seven days. Do not upload reports from private documents to public CI or issues. PDF metadata, timestamps and font rasterization can vary by operating system; assertions check semantic behavior rather than byte-identical generated PDFs. Automated layout checks detect overflow and clipped controls but do not replace visual inspection.
+CI retains the validation reports and UI screenshots for seven days; external lab downloads and generated sources are not included in that artifact. Do not upload reports from private documents to public CI or issues. PDF metadata, timestamps and font rasterization can vary by operating system; assertions check semantic behavior rather than byte-identical generated PDFs. Automated layout checks detect overflow and clipped controls but do not replace visual inspection.
 
 ## Standalone distributions
 

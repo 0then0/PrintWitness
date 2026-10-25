@@ -19,6 +19,8 @@ PrintWitness runs locally. Its workspace combines a checklist, rendered document
 
 Standalone packages include Node.js, Playwright, Chromium and the built interface. Launch PrintWitness with one click; Git, npm and a separate Chromium installation are not required. Portable and installation packages use the same prepared application.
 
+Download packages and `SHA256SUMS.txt` from [GitHub Releases](https://github.com/0then0/PrintWitness/releases/latest). See the [changelog](CHANGELOG.md) for changes between versions. Applications are unsigned; macOS packages are not notarized.
+
 See [standalone installation and packaging](docs/desktop.md) for macOS ZIP/DMG, Windows ZIP/installer and Ubuntu archive/Debian packages. The [Desktop workflow](.github/workflows/desktop.yml) builds and tests native distributions and stores them as CI artifacts. It does not publish releases automatically.
 
 ## Install from source
@@ -86,6 +88,8 @@ npm run check
 This runs Biome, strict TypeScript checking, the production build, core regression tests, real Chromium/PDF.js validation and browser interaction tests. Browser tests cover every supported language at desktop, tablet and narrow mobile widths. [Reproducible validation](docs/validation.md) describes the assertions and generated artifacts.
 
 [CI](.github/workflows/ci.yml) runs the same checks on Ubuntu with Node.js 24 for pushes and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for the code layout, formatting and translation workflow.
+
+For bugs and feature requests, use the [issue forms](https://github.com/0then0/PrintWitness/issues/new/choose) with synthetic examples. Participation follows the [code of conduct](CODE_OF_CONDUCT.md). Report vulnerabilities using [SECURITY.md](SECURITY.md), without posting exploit details or private documents publicly.
 
 ## External renderer case study
 

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/0then0/PrintWitness/blob/main/SECURITY.md#reporting-a-vulnerability
+    about: Follow the private reporting instructions; do not post exploit details or private documents in an issue.
+  - name: Verification limits and report states
+    url: https://github.com/0then0/PrintWitness/blob/main/docs/matching.md
+    about: Read how section boundaries, text-layer presence and manual review affect results.
