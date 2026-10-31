@@ -148,6 +148,8 @@ export const messages: Messages = {
   warningPreview: 'Página {page}: não foi possível gerar a prévia.',
   reasonRotated:
     'A v0.1 não mapeia texto girado ou vertical de forma confiável. Inspecione este PDF manualmente.',
+  errorPdfResource:
+    'Recurso de PDF indisponível: {resource}. O processamento está incompleto. Reinstale o aplicativo completo.',
   errorPdfRead:
     'Não foi possível ler o PDF. Ele pode estar criptografado, danificado ou não ser compatível.',
   errorPdfSize: 'O PDF excede 25 MiB.',

@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { chmod, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { appRoot } from '../src/node/paths.ts';
 import { app, metadata, output, run, target } from './desktop/common.ts';
 import { fixtureServer } from './fixture-server.ts';
 
@@ -12,6 +15,7 @@ process.env.PLAYWRIGHT_BROWSERS_PATH = join(app, 'browsers');
 const { chromium } = await import('playwright');
 
 const testRoot = join(output, 'smoke test 日本語');
+const workingDirectory = await mkdtemp(join(tmpdir(), 'PrintWitness cwd 日本語 '));
 async function makeRemovable(path: string) {
   if (process.platform === 'win32') return;
   await chmod(path, 0o755).catch(() => {});
@@ -34,11 +38,27 @@ const portable =
   process.platform === 'darwin'
     ? join(testRoot, 'PrintWitness.app/Contents/Resources/app')
     : join(testRoot, 'PrintWitness');
+assert.equal(
+  JSON.parse(await readFile(join(portable, 'build.json'), 'utf8')).version,
+  metadata.version,
+);
 assert.deepEqual(
   await readdir(join(portable, 'fixtures')),
   ['validation.html'],
   'Desktop payload must not include external lab fixtures without their notices.',
 );
+// Verify the actual archive's entire resource inventory, including decoder JS
+// fallbacks and license files. npm's lockfile alone does not establish delivery.
+for (const directory of ['cmaps', 'standard_fonts', 'wasm', 'iccs']) {
+  const resourcePath = `node_modules/pdfjs-dist/${directory}`;
+  const expected = await readdir(join(app, resourcePath));
+  assert.deepEqual(await readdir(join(portable, resourcePath)), expected);
+  for (const filename of expected) {
+    const shipped = await readFile(join(portable, resourcePath, filename));
+    assert(shipped.length > 0, `${resourcePath}/${filename} must not be empty`);
+    assert.deepEqual(shipped, await readFile(join(app, resourcePath, filename)));
+  }
+}
 const executableFor = (root: string) =>
   process.platform === 'darwin'
     ? join(root, '../../MacOS/PrintWitness')
@@ -92,7 +112,7 @@ async function waitFor<T>(fn: () => Promise<T | undefined>, timeout = 20_000): P
 }
 function launch(root: string, state: string) {
   const child = spawn(executableFor(root), ['--no-open', `--state-dir=${state}`], {
-    cwd: testRoot,
+    cwd: workingDirectory,
     env,
     stdio: ['ignore', 'pipe', 'pipe'],
     windowsHide: true,
@@ -144,6 +164,54 @@ try {
     assert(response.ok, JSON.stringify(value));
     return value;
   };
+  // The fixture is supplied by the test, outside the shipped application.
+  const cmapManifest = JSON.parse(
+    await readFile(join(appRoot, 'fixtures/pdf/cmap-manifest.json'), 'utf8'),
+  );
+  const cmapPdf = await readFile(join(appRoot, 'fixtures/pdf/predefined-cmap.pdf'));
+  const cmapResult = await api('check', {
+    manifest: cmapManifest,
+    name: 'predefined-cmap.pdf',
+    pdf: cmapPdf.toString('base64'),
+  });
+  assert.equal(cmapResult.report.status, 'found');
+  assert.deepEqual(
+    cmapResult.report.pdf.pages.map((p: { text: string }) => p.text),
+    ['日本語'],
+  );
+  assert.equal(cmapResult.report.findings[0].evidence[0].text, '日本語');
+  // Repeat packaged extraction/comparison with all outgoing TCP/fetch disabled.
+  // This child has the bundled runtime, an external cwd and the same clean env.
+  await run(
+    join(portable, 'runtime', process.platform === 'win32' ? 'node.exe' : 'node'),
+    [
+      '--input-type=module',
+      '--eval',
+      `
+      import assert from 'node:assert/strict';
+      import net from 'node:net';
+      let attempts = 0;
+      const blocked = () => { attempts++; throw new Error('PDF resource network access forbidden'); };
+      globalThis.fetch = blocked;
+      net.Socket.prototype.connect = blocked;
+      const { analyzePdf } = await import(${JSON.stringify(pathToFileURL(join(portable, 'src/node/pdf.ts')).href)});
+      const { pdfResourceRoot, pdfResources } = await import(${JSON.stringify(pathToFileURL(join(portable, 'src/node/pdf-resources.ts')).href)});
+      const { compare } = await import(${JSON.stringify(pathToFileURL(join(portable, 'src/core/compare.ts')).href)});
+      assert.equal(pdfResourceRoot.href, ${JSON.stringify(pathToFileURL(`${join(portable, 'node_modules/pdfjs-dist')}/`).href)});
+      const { index } = await analyzePdf(Buffer.from(${JSON.stringify(cmapPdf.toString('base64'))}, 'base64'));
+      assert.equal(index.error, undefined);
+      assert.deepEqual(index.pages.map(p => p.text), ['日本語']);
+      assert.equal(compare(${JSON.stringify(cmapManifest)}, index, {name:'cmap.pdf',sha256:'fixture'}).status, 'found');
+      const resources = pdfResources();
+      const factory = new resources.options.BinaryDataFactory();
+      for (const filename of ['openjpeg.wasm', 'jbig2.wasm', 'openjpeg_nowasm_fallback.js', 'jbig2_nowasm_fallback.js'])
+        assert((await factory.fetch({kind:'wasmUrl', filename})).length > 0);
+      assert.equal(attempts, 0, 'PDF processing must not attempt network resource loads');
+      console.log('Packaged PDF: 日本語, found, local dependency resolution, decoder assets and zero outgoing TCP/fetch attempts passed.');
+    `,
+    ],
+    { cwd: workingDirectory, env },
+  );
   const duplicate = launch(portable, stateDir);
   assert.equal(await duplicate.exited, 0, duplicate.errors());
   assert.equal(
@@ -313,4 +381,5 @@ try {
   await browser.close();
   await fixture.close();
   if (foreign.listening) await new Promise<void>((done) => foreign.close(() => done()));
+  await rm(workingDirectory, { recursive: true, force: true });
 }

@@ -9,6 +9,19 @@ Notable user-facing changes are recorded here. Release dates use UTC. Published 
 - Added repository editor/Git conventions, community policies, issue forms and a pull request template.
 - Refined CI permissions, action pinning, concurrency, artifact scope and desktop build triggers.
 
+## [0.1.2] - 2026-10-31
+
+### Fixed
+
+- Resolve PDF.js CMaps, standard fonts and WASM from the same installed dependency as the PDF engine, including relocated desktop packages and paths containing spaces or Unicode.
+- Report failed runtime-resource reads as incomplete, unverifiable processing instead of silently diagnosing a missing text layer. Disable system-font fallback for reproducible local resource use.
+
+### Added
+
+- Original synthetic PDF controls and a predefined `UniJIS-UCS2-H` extraction/comparison regression for 日本語, including isolated missing-resource failures.
+- Packaged CMap checks, resource inventory verification and an outgoing-network-blocked extraction pass in the existing desktop smoke test. This verifies a specific horizontal-text path, not complete CJK, OCR, visual or accessibility support.
+- Runtime-resource diagnostics in all seven supported languages and external-PDF documentation.
+
 ## [0.1.1] - 2026-10-24
 
 ### Fixed
@@ -32,6 +45,7 @@ Notable user-facing changes are recorded here. Release dates use UTC. Published 
 - Seven interface languages and system, light and dark themes.
 - Standalone macOS arm64/x64, Windows x64 and Ubuntu 24.04 x64 packages with bundled Node.js and Chromium, native launchers and installer smoke tests.
 
-[Unreleased]: https://github.com/0then0/PrintWitness/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/0then0/PrintWitness/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/0then0/PrintWitness/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/0then0/PrintWitness/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/0then0/PrintWitness/releases/tag/v0.1.0

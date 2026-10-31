@@ -147,6 +147,8 @@ export const messages: Messages = {
   warningPreview: 'Seite {page}: Vorschau konnte nicht gerendert werden.',
   reasonRotated:
     'v0.1 kann gedrehten oder vertikalen Text nicht zuverlässig zuordnen. PDF manuell prüfen.',
+  errorPdfResource:
+    'PDF-Laufzeitressource nicht verfügbar: {resource}. Die Verarbeitung ist unvollständig. Installieren Sie die vollständige Anwendung erneut.',
   errorPdfRead:
     'PDF kann nicht gelesen werden. Es ist möglicherweise verschlüsselt, beschädigt oder nicht unterstützt.',
   errorPdfSize: 'PDF überschreitet 25 MiB.',

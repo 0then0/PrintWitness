@@ -1,0 +1,12 @@
+{
+  "schema": "printwitness/1",
+  "createdAt": "2026-10-31T00:00:00Z",
+  "source": { "name": "synthetic-cmap", "sha256": "synthetic", "readiness": "fixture" },
+  "exclusions": [],
+  "sections": [{
+    "id": "japanese", "selector": "#japanese", "title": "日本語", "anchor": "日本語",
+    "before": null, "after": null, "endContext": null, "startContext": null,
+    "anchorInside": true, "headers": [],
+    "expectations": [{ "id": "text", "kind": "text", "text": "日本語" }]
+  }]
+}

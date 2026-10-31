@@ -102,6 +102,11 @@ export function diagnostic(locale: Locale, message: string): string {
   const exact = Object.hasOwn(diagnosticKeys, message) ? diagnosticKeys[message] : undefined;
   if (exact) return t(exact);
   const patterns: [RegExp, MessageKey, string][] = [
+    [
+      /^PDF runtime resource unavailable: (.*)\. Processing is incomplete\.$/,
+      'errorPdfResource',
+      'resource',
+    ],
     [/^Explicitly excluded: (.*)$/s, 'reasonExcluded', 'reason'],
     [
       /^(?:page\.evaluate: (?:Error: )?)?Selector matches no elements: (.+)$/s,

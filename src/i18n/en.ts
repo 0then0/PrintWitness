@@ -143,6 +143,8 @@ export const en = {
   warningRotated: 'Page {page}: rotated or vertical text needs manual inspection.',
   warningPreview: 'Page {page}: preview could not be rendered.',
   reasonRotated: 'v0.1 cannot reliably map rotated or vertical text. Inspect this PDF manually.',
+  errorPdfResource:
+    'PDF runtime resource unavailable: {resource}. Processing is incomplete. Reinstall the complete application.',
   errorPdfRead: 'Cannot read PDF. It may be encrypted, damaged or unsupported.',
   errorPdfSize: 'PDF exceeds 25 MiB.',
   errorManifest: 'Invalid manifest. Expected printwitness/1, non-empty sections and unique IDs.',

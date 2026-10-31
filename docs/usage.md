@@ -50,3 +50,11 @@ The overall result prioritizes mismatch, then unverifiable, then manual review, 
 Download the checked PDF, JSON report or standalone HTML report. HTML exports include raster page previews, coordinate highlights and translated explanations, with no external assets. Select a finding to highlight its evidence. JSON preserves stable status values and English diagnostics for automation.
 
 The local server retains at most three checked documents in memory. Restarting clears them. Export results explicitly if you need to keep them. Exports include expected text, page text, URLs and hashes; they are not redacted.
+
+## External PDF runtime resources
+
+PDF.js reads CMaps, standard fonts and image decoder data from the installed application, without CDN access. Some PDFs require a predefined CMap to interpret their text. Version 0.1.2 checks this path with a synthetic horizontal `UniJIS-UCS2-H` document containing 日本語; this is not a claim of complete CJK or arbitrary PDF support.
+
+At module initialization the application resolves the same installed PDF.js entry point used for extraction. It does not require every optional resource to be readable before accepting any document. During processing, the local `BinaryDataFactory` reads requested CMaps, standard-font data and WASM. A failed or empty resource read is retained even when PDF.js catches the error and continues. The report then says **PDF runtime resource unavailable**, identifies the requested resource and marks active checks **Unverifiable**, including when some text survived. Reinstall the complete application rather than treating this as evidence of missing PDF content. Unused missing resources do not fail unrelated PDFs.
+
+A PDF with no extracted text and no detected processing failure is reported separately as having no usable text layer; OCR remains outside v0.1. Parsing/extraction failures are reported as unreadable or unsupported PDFs. Preview failures have page warnings. This does not detect every recovery or warning inside PDF.js: its API provides no complete processing-success contract, and decoder JavaScript fallback imports are outside `BinaryDataFactory`. A successful text comparison still does not prove visible content, absence of clipping/overlap, correct glyph appearance or PDF accessibility. Rotated and vertical text still require manual inspection.

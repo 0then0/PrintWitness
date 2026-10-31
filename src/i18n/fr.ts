@@ -147,6 +147,8 @@ export const messages: Messages = {
   warningPreview: 'Page {page} : impossible de générer l’aperçu.',
   reasonRotated:
     'v0.1 ne peut pas positionner fiablement le texte pivoté ou vertical. Examinez ce PDF manuellement.',
+  errorPdfResource:
+    'Ressource PDF indisponible : {resource}. Le traitement est incomplet. Réinstallez l’application complète.',
   errorPdfRead:
     'Impossible de lire le PDF. Il est peut-être chiffré, endommagé ou non pris en charge.',
   errorPdfSize: 'Le PDF dépasse 25 MiB.',

@@ -1,23 +1,22 @@
-import { fileURLToPath } from 'node:url';
 import { getDocument, type PDFDocumentProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { Box, PdfIndex } from '../core/types.ts';
+import { pdfResources } from './pdf-resources.ts';
 
-const assets = fileURLToPath(new URL('../../../node_modules/pdfjs-dist/', import.meta.url));
 export interface PdfAnalysis {
   index: PdfIndex;
   images: string[];
 }
-export async function analyzePdf(bytes: Uint8Array): Promise<PdfAnalysis> {
+export async function analyzePdf(
+  bytes: Uint8Array,
+  { resourceRoot }: { resourceRoot?: URL } = {},
+): Promise<PdfAnalysis> {
   const index: PdfIndex = { pages: [], tokens: [], links: [], warnings: [] };
   const images: string[] = [];
   let doc: PDFDocumentProxy | undefined;
+  const resources = pdfResources(resourceRoot);
   const task = getDocument({
     data: new Uint8Array(bytes),
-    useSystemFonts: true,
-    standardFontDataUrl: `${assets}standard_fonts/`,
-    cMapUrl: `${assets}cmaps/`,
-    cMapPacked: true,
-    wasmUrl: `${assets}wasm/`,
+    ...resources.options,
     stopAtErrors: true,
   });
   task.onPassword = () => task.destroy();
@@ -115,5 +114,7 @@ export async function analyzePdf(bytes: Uint8Array): Promise<PdfAnalysis> {
   } finally {
     await task.destroy();
   }
+  if (resources.failures.size)
+    index.error = `PDF runtime resource unavailable: ${[...resources.failures].join(', ')}. Processing is incomplete.`;
   return { index, images };
 }

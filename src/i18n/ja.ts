@@ -143,6 +143,8 @@ export const messages: Messages = {
   warningPreview: '{page}ページ：プレビューを生成できませんでした。',
   reasonRotated:
     'v0.1では回転・縦書きテキストの位置を正確に対応付けられません。このPDFを手動で確認してください。',
+  errorPdfResource:
+    'PDFの実行時リソースを利用できません：{resource}。処理は未完了です。アプリケーション全体を再インストールしてください。',
   errorPdfRead: 'PDFを読み取れません。暗号化、破損、未対応形式の可能性があります。',
   errorPdfSize: 'PDFが25 MiBを超えています。',
   errorManifest:

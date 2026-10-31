@@ -147,6 +147,8 @@ export const messages: Messages = {
   warningPreview: 'Página {page}: no se pudo generar la vista previa.',
   reasonRotated:
     'v0.1 no puede ubicar con fiabilidad texto girado o vertical. Revisa este PDF manualmente.',
+  errorPdfResource:
+    'Recurso de PDF no disponible: {resource}. El procesamiento está incompleto. Reinstala la aplicación completa.',
   errorPdfRead: 'No se puede leer el PDF. Puede estar cifrado, dañado o no ser compatible.',
   errorPdfSize: 'El PDF supera los 25 MiB.',
   errorManifest:

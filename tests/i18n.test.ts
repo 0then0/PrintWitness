@@ -67,6 +67,13 @@ test('all core reasons and warnings have translated presentation without changin
       t('errorTimeout'),
     );
     assert.equal(diagnostic(locale, 'Cannot read PDF: Invalid PDF structure'), t('errorPdfRead'));
+    assert.equal(
+      diagnostic(
+        locale,
+        'PDF runtime resource unavailable: cMapUrl/UniJIS-UCS2-H.bcmap. Processing is incomplete.',
+      ),
+      t('errorPdfResource', { resource: 'cMapUrl/UniJIS-UCS2-H.bcmap' }),
+    );
     assert.equal(diagnostic(locale, 'Unexpected token in JSON'), t('errorJson'));
     assert.equal(diagnostic(locale, 'ENOENT: missing local.html'), t('errorFile'));
     assert.equal(diagnostic(locale, 'Unrecognized platform failure'), t('operationFailed'));
@@ -116,6 +123,7 @@ test('standalone HTML translates labels and diagnostics, retains document text a
     ],
     warnings: [
       'Text-layer presence does not prove visibility. Clipping, overlays and transparency are not universally detected.',
+      'PDF runtime resource unavailable: cMapUrl/UniJIS-UCS2-H.bcmap. Processing is incomplete.',
     ],
   };
   const before = JSON.stringify(report);
@@ -128,6 +136,7 @@ test('standalone HTML translates labels and diagnostics, retains document text a
     assert(html.includes('原文 · café · Москва'));
     assert(html.includes('Original heading'));
     assert(html.includes(t('warningVisibility')));
+    assert(html.includes(t('errorPdfResource', { resource: 'cMapUrl/UniJIS-UCS2-H.bcmap' })));
     assert(!html.includes('<script>alert(1)</script>'));
     assert(html.includes('&lt;script&gt;alert(1)&lt;/script&gt;'));
   }

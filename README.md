@@ -44,7 +44,7 @@ For development use `npm run dev`. Set `PORT` to change the local server port.
 2. Enter CSS selectors for the required sections or tables. The example uses `#summary`, `#register` and `#terms`.
 3. Choose how to wait for the page. For asynchronous data, use an explicit selector or global readiness signal with a bounded timeout.
 4. Set intentional exclusions, then click **Freeze manifest**. Review the expectations and download the manifest.
-5. Click **Create PDF**, or use **Check PDF** to select an existing text PDF. Both operations check against the frozen expectations.
+5. Click **Create PDF**, or use **Check PDF** to select an existing text PDF. Both operations check against the frozen expectations. Required PDF.js resources are read from the local application; unavailable resources produce an explicit unverifiable result. See [external PDF diagnostics](docs/usage.md#external-pdf-runtime-resources).
 6. Select a finding to inspect its explanation and page coordinates. Export the JSON report, standalone HTML report and checked PDF.
 
 Capturing again creates a new baseline. Printing never silently replaces it. Keep the manifest, PDF and report together.
