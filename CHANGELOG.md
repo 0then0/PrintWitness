@@ -13,6 +13,8 @@ Notable user-facing changes are recorded here. Release dates use UTC. Published 
 
 ### Fixed
 
+- Disable Chromium file logging so Windows runtime checks do not create `debug.log` inside the installation.
+
 - Resolve PDF.js CMaps, standard fonts and WASM from the same installed dependency as the PDF engine, including relocated desktop packages and paths containing spaces or Unicode.
 - Report failed runtime-resource reads as incomplete, unverifiable processing instead of silently diagnosing a missing text layer. Disable system-font fallback for reproducible local resource use.
 

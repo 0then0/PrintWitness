@@ -79,12 +79,8 @@ async function openSource(
     url = `http://printwitness-source.invalid/${encodeURIComponent(basename(path))}`;
   }
   const browser = await chromium.launch({
-    // Windows Chromium otherwise writes debug.log beside its executable.
-    args: [
-      '--disable-background-networking',
-      '--disable-component-update',
-      '--enable-logging=stderr',
-    ],
+    // Keep Chromium diagnostics from creating debug.log inside the installation.
+    args: ['--disable-background-networking', '--disable-component-update', '--disable-logging'],
   });
   try {
     const context = await browser.newContext({ serviceWorkers: 'block', acceptDownloads: false });
